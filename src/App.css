@@ -1,0 +1,323 @@
+:root {
+  --bg: #f7f7f9;
+  --card-bg: #ffffff;
+  --primary: #ff6b35;
+  --primary-dark: #e85a26;
+  --accent: #2d6cdf;
+  --text: #1f2330;
+  --muted: #777f8c;
+  --border: #e6e8ec;
+  --radius: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+/* Header */
+.app-header {
+  padding: 18px 16px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.app-header h1 {
+  font-size: 1.25rem;
+  margin: 0;
+  color: var(--text);
+}
+.loc-badge {
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  color: var(--muted);
+  cursor: pointer;
+  white-space: nowrap;
+  max-width: 45%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Location Gate */
+.gate {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 20px;
+  text-align: center;
+}
+.gate h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+.gate .hint {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.address-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 320px;
+}
+.address-form input {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 1rem;
+}
+.address-form input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* Buttons */
+.primary-btn,
+.secondary-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 13px 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+}
+.primary-btn,
+.address-form button {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 13px 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.primary-btn:hover,
+.address-form button:hover {
+  background: var(--primary-dark);
+}
+.primary-btn:disabled,
+.address-form button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.secondary-btn {
+  background: #fff;
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+}
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+/* Tab nav */
+.tab-nav {
+  display: flex;
+  gap: 6px;
+  padding: 0 12px;
+}
+.tab-nav__btn {
+  flex: 1;
+  background: none;
+  border: none;
+  border-bottom: 2.5px solid transparent;
+  padding: 10px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.tab-nav__btn--active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  font-weight: 700;
+}
+.tab-nav__icon {
+  font-size: 1.15rem;
+}
+
+/* Content */
+.content {
+  flex: 1;
+  padding: 14px 16px 24px;
+}
+.tab-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.status {
+  text-align: center;
+  color: var(--muted);
+  padding: 30px 0;
+}
+.error {
+  color: #d93a3a;
+  font-size: 0.88rem;
+  text-align: center;
+}
+
+/* Filter controls */
+.filter-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.chip-row,
+.radius-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.radius-label {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-right: 2px;
+}
+.chip {
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: var(--text);
+}
+.chip--active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+/* Card */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+.card--highlight {
+  border: 2px solid var(--primary);
+  box-shadow: 0 4px 16px rgba(255, 107, 53, 0.15);
+}
+.card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+.card__name {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+.card--highlight .card__name {
+  font-size: 1.3rem;
+}
+.card__distance {
+  font-size: 0.8rem;
+  color: var(--accent);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.card__meta {
+  display: flex;
+  gap: 10px;
+  margin: 6px 0;
+  flex-wrap: wrap;
+}
+.card__cat {
+  font-size: 0.8rem;
+  color: var(--primary);
+  background: rgba(255, 107, 53, 0.1);
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+.card__phone {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.card__addr {
+  margin: 4px 0 10px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.card__link {
+  font-size: 0.85rem;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+.card__link:hover {
+  text-decoration: underline;
+}
+
+/* List */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.list-count {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin: 4px 0;
+}
+
+/* Map */
+.map {
+  width: 100%;
+  height: 240px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+/* Footer */
+.app-footer {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--muted);
+  padding: 14px;
+}
+
+/* Spinner */
+.spinner {
+  width: 34px;
+  height: 34px;
+  border: 3px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
