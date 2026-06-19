@@ -24,7 +24,8 @@ export default function RouletteTab() {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- 데이터 패칭 시작 시 로딩 표시
     setLoading(true)
     setError(null)
-    searchNearbyRestaurants({ x: coords.lng, y: coords.lat, radius: 1500, sort: 'distance' })
+    // 기본 정렬(accuracy) + 최대 45곳 → 1.5km 전역에서 균등하게 랜덤
+    searchNearbyRestaurants({ x: coords.lng, y: coords.lat, radius: 1500 })
       .then((list) => {
         if (cancelled) return
         setPlaces(list)

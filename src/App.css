@@ -86,6 +86,13 @@
   outline: none;
   border-color: var(--primary);
 }
+.preset-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
 
 /* Buttons */
 .primary-btn,
@@ -258,6 +265,14 @@
   background: rgba(255, 107, 53, 0.1);
   padding: 2px 8px;
   border-radius: 6px;
+}
+.card__main {
+  font-size: 0.82rem;
+  color: var(--text);
+  font-weight: 600;
+}
+.card--highlight .card__main {
+  color: var(--primary);
 }
 .card__phone {
   font-size: 0.8rem;

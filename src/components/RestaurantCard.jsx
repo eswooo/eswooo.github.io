@@ -1,8 +1,15 @@
-// 카테고리 문자열 "음식점 > 한식 > 국밥" 에서 마지막 의미있는 분류만 추출
-function shortCategory(category) {
-  if (!category) return ''
-  const parts = category.split('>').map((s) => s.trim())
-  return parts[parts.length - 1] || parts[0]
+// 카카오 카테고리 경로 "음식점 > 한식 > 국밥" → { genre: '한식', detail: '국밥' }
+// detail(세부분류)이 사실상 주메뉴 힌트 역할. (카카오 무료 SDK는 실제 메뉴를 안 줌)
+function categoryInfo(category) {
+  if (!category) return { genre: '', detail: '' }
+  const parts = category
+    .split('>')
+    .map((s) => s.trim())
+    .filter(Boolean)
+  const meaningful = parts[0] === '음식점' ? parts.slice(1) : parts
+  const genre = meaningful[0] || ''
+  const detail = meaningful[meaningful.length - 1] || genre
+  return { genre, detail }
 }
 
 function formatDistance(d) {
@@ -12,6 +19,8 @@ function formatDistance(d) {
 
 export default function RestaurantCard({ place, highlight = false }) {
   if (!place) return null
+  const { genre, detail } = categoryInfo(place.category)
+  const hasMenuHint = detail && detail !== genre
   return (
     <div className={`card ${highlight ? 'card--highlight' : ''}`}>
       <div className="card__head">
@@ -21,7 +30,10 @@ export default function RestaurantCard({ place, highlight = false }) {
         )}
       </div>
       <div className="card__meta">
-        <span className="card__cat">{shortCategory(place.category)}</span>
+        {genre && <span className="card__cat">{genre}</span>}
+        {hasMenuHint && (
+          <span className="card__main">{highlight ? `주메뉴 · ${detail}` : `· ${detail}`}</span>
+        )}
         {place.phone && <span className="card__phone">{place.phone}</span>}
       </div>
       <p className="card__addr">{place.roadAddress || place.address}</p>

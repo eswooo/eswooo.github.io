@@ -16,12 +16,14 @@ const CATEGORIES = [
 ]
 
 const RADIUS_OPTIONS = [500, 1000, 1500, 2000]
+const COUNT_OPTIONS = [15, 30, 45]
 
 // 카테고리 + 반경으로 필터 후, 그 안에서 랜덤 1곳.
 export default function FilterTab() {
   const { coords } = useLocation()
   const [category, setCategory] = useState('all')
   const [radius, setRadius] = useState(1000)
+  const [count, setCount] = useState(15)
   const [results, setResults] = useState([])
   const [picked, setPicked] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -40,8 +42,8 @@ export default function FilterTab() {
     try {
       const cat = CATEGORIES.find((c) => c.key === category)
       const list = cat.keyword
-        ? await searchByKeyword(cat.keyword, { x: coords.lng, y: coords.lat, radius })
-        : await searchNearbyRestaurants({ x: coords.lng, y: coords.lat, radius, sort: 'distance' })
+        ? await searchByKeyword(cat.keyword, { x: coords.lng, y: coords.lat, radius, maxResults: count })
+        : await searchNearbyRestaurants({ x: coords.lng, y: coords.lat, radius, maxResults: count })
       setResults(list)
       setPicked(pickRandom(list))
     } catch (e) {
@@ -74,6 +76,18 @@ export default function FilterTab() {
               onClick={() => setRadius(r)}
             >
               {r < 1000 ? `${r}m` : `${r / 1000}km`}
+            </button>
+          ))}
+        </div>
+        <div className="radius-row">
+          <span className="radius-label">개수</span>
+          {COUNT_OPTIONS.map((n) => (
+            <button
+              key={n}
+              className={`chip ${count === n ? 'chip--active' : ''}`}
+              onClick={() => setCount(n)}
+            >
+              {n}곳
             </button>
           ))}
         </div>

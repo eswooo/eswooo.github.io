@@ -5,7 +5,8 @@
 // JS 키는 클라이언트에 노출되지만 카카오 콘솔의 도메인 제한으로 보호한다.
 
 const APP_KEY = import.meta.env.VITE_KAKAO_MAP_KEY
-const SDK_URL = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${APP_KEY}&libraries=services&autoload=false`
+// HTTPS 명시. 프로토콜 상대(//)는 HTTP 페이지(LAN IP 접속)에서 http://dapi... 로 풀려 로드 실패할 수 있음.
+const SDK_URL = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${APP_KEY}&libraries=services&autoload=false`
 
 let loadPromise = null
 
@@ -58,59 +59,69 @@ function normalizePlace(p) {
   }
 }
 
-// services.Pagination 콜백을 Promise로 감싸는 공통 헬퍼
-function runSearch(executor) {
+// 페이지네이션 누적 헬퍼.
+// 카카오는 한 페이지에 최대 15곳만 주므로, maxResults 까지 페이지를 누적한다.
+// start(kakao, handle) 로 첫 검색을 시작하고, handle 의 3번째 인자 pagination 으로 이어 받는다.
+function paginatedSearch(start, maxResults) {
   return loadKakao().then(
     (kakao) =>
       new Promise((resolve, reject) => {
         const { Status } = kakao.maps.services
-        executor(kakao, (data, status) => {
+        const acc = []
+        const handle = (data, status, pagination) => {
           if (status === Status.OK) {
-            resolve(data.map(normalizePlace))
+            acc.push(...data.map(normalizePlace))
+            if (pagination.hasNextPage && acc.length < maxResults) {
+              pagination.nextPage() // 같은 콜백을 다음 페이지로 재호출
+            } else {
+              resolve(acc.slice(0, maxResults))
+            }
           } else if (status === Status.ZERO_RESULT) {
-            resolve([])
+            resolve(acc) // 첫 페이지 없거나 더 없으면 지금까지 누적분 반환
           } else {
             reject(new Error('카카오 장소 검색에 실패했습니다.'))
           }
-        })
+        }
+        start(kakao, handle)
       }),
   )
 }
 
 /**
  * 좌표 주변 음식점(FD6) 검색.
- * @param {{ x:number|string, y:number|string, radius?:number, sort?:'distance'|'accuracy', size?:number }} opts
+ * 카카오는 한 페이지에 최대 15곳만 주므로, maxResults 까지 페이지를 누적한다.
+ * 기본 정렬은 accuracy — distance 로 두면 "가장 가까운 15곳"에만 몰려 랜덤 풀이 좁아진다.
+ * (좌표를 넘기므로 정렬과 무관하게 각 결과의 distance 필드는 채워진다.)
+ * @param {{ x:number|string, y:number|string, radius?:number, sort?:'distance'|'accuracy', maxResults?:number }} opts
  * @returns {Promise<Array>}
  */
-export function searchNearbyRestaurants({ x, y, radius = 1000, sort = 'distance', size = 15 }) {
-  return runSearch((kakao, cb) => {
+export function searchNearbyRestaurants({ x, y, radius = 1000, sort = 'accuracy', maxResults = 45 }) {
+  return paginatedSearch((kakao, handle) => {
     const places = new kakao.maps.services.Places()
-    const sortBy =
-      sort === 'distance'
-        ? kakao.maps.services.SortBy.DISTANCE
-        : kakao.maps.services.SortBy.ACCURACY
-    places.categorySearch('FD6', cb, { x, y, radius, sort: sortBy, size })
-  })
+    const { SortBy } = kakao.maps.services
+    const sortBy = sort === 'distance' ? SortBy.DISTANCE : SortBy.ACCURACY
+    places.categorySearch('FD6', handle, { x, y, radius, sort: sortBy, size: 15 })
+  }, maxResults)
 }
 
 /**
- * 키워드 + 좌표 기반 검색 (예: "한식", "초밥").
+ * 키워드 + 좌표 기반 검색 (예: "한식", "초밥"). maxResults 까지 페이지 누적.
  * @param {string} keyword
- * @param {{ x:number|string, y:number|string, radius?:number, size?:number }} opts
+ * @param {{ x:number|string, y:number|string, radius?:number, maxResults?:number }} opts
  * @returns {Promise<Array>}
  */
-export function searchByKeyword(keyword, { x, y, radius = 1000, size = 15 }) {
-  return runSearch((kakao, cb) => {
+export function searchByKeyword(keyword, { x, y, radius = 1000, maxResults = 15 }) {
+  return paginatedSearch((kakao, handle) => {
     const places = new kakao.maps.services.Places()
-    places.keywordSearch(keyword, cb, {
+    places.keywordSearch(keyword, handle, {
       x,
       y,
       radius,
       sort: kakao.maps.services.SortBy.DISTANCE,
-      size,
+      size: 15,
       category_group_code: 'FD6',
     })
-  })
+  }, maxResults)
 }
 
 /**

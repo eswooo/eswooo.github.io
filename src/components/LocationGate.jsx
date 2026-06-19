@@ -24,9 +24,11 @@ export default function LocationGate({ onReady }) {
     }
   }, [status, coords, onReady])
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    const q = address.trim()
+  // 자주 쓰는 위치 빠른 선택
+  const PRESETS = [{ label: '🏢 중앙일보 빌딩', query: '중앙일보' }]
+
+  const goToAddress = async (query) => {
+    const q = query.trim()
     if (!q) return
     setGeocoding(true)
     setManualError(null)
@@ -38,6 +40,11 @@ export default function LocationGate({ onReady }) {
     } finally {
       setGeocoding(false)
     }
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    goToAddress(address)
   }
 
   if (status === 'loading' || status === 'idle') {
@@ -68,6 +75,21 @@ export default function LocationGate({ onReady }) {
         </button>
       </form>
       {manualError && <p className="error">{manualError}</p>}
+
+      <div className="preset-row">
+        <span className="radius-label">빠른 선택</span>
+        {PRESETS.map((p) => (
+          <button
+            key={p.query}
+            className="chip"
+            onClick={() => goToAddress(p.query)}
+            disabled={geocoding}
+          >
+            {p.label}
+          </button>
+        ))}
+      </div>
+
       <button className="link-btn" onClick={request} disabled={status === 'loading'}>
         위치 권한 다시 시도
       </button>
