@@ -155,3 +155,29 @@ export function addressToCoords(address) {
       }),
   )
 }
+
+/**
+ * 좌표 → 주소명 변환 (GPS로 잡은 위치에 사람이 읽을 라벨을 붙일 때).
+ * 실패해도 reject하지 않고 '현재 위치' 로 폴백한다.
+ * @param {{ lat:number, lng:number }} coords
+ * @returns {Promise<string>}
+ */
+export function coordsToAddress({ lat, lng }) {
+  return loadKakao().then(
+    (kakao) =>
+      new Promise((resolve) => {
+        const geocoder = new kakao.maps.services.Geocoder()
+        const { Status } = kakao.maps.services
+        geocoder.coord2Address(lng, lat, (result, status) => {
+          if (status === Status.OK && result.length > 0) {
+            const r = result[0]
+            const road = r.road_address && r.road_address.address_name
+            const jibun = r.address && r.address.address_name
+            resolve(road || jibun || '현재 위치')
+          } else {
+            resolve('현재 위치')
+          }
+        })
+      }),
+  )
+}

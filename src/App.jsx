@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { LocationContext } from './context/LocationContext'
+import { addRecentLocation } from './lib/recentLocations'
 import LocationGate from './components/LocationGate'
 import TabNav from './components/TabNav'
 import RouletteTab from './components/RouletteTab'
@@ -17,6 +18,12 @@ export default function App() {
   const [location, setLocation] = useState(null) // { coords, label }
   const [tab, setTab] = useState('roulette')
 
+  // 위치 확정 시 최근 위치로 기록 후 적용
+  const handleReady = useCallback(({ coords, label }) => {
+    addRecentLocation({ label, lat: coords.lat, lng: coords.lng })
+    setLocation({ coords, label })
+  }, [])
+
   return (
     <div className="app">
       <header className="app-header">
@@ -29,7 +36,7 @@ export default function App() {
       </header>
 
       {!location ? (
-        <LocationGate onReady={setLocation} />
+        <LocationGate onReady={handleReady} />
       ) : (
         <LocationContext.Provider value={location}>
           <TabNav tabs={TABS} active={tab} onChange={setTab} />

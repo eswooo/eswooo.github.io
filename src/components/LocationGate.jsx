@@ -1,31 +1,38 @@
 import { useEffect, useState } from 'react'
 import { useGeolocation } from '../hooks/useGeolocation'
-import { addressToCoords } from '../lib/kakao'
+import { addressToCoords, coordsToAddress } from '../lib/kakao'
+import { getRecentLocations } from '../lib/recentLocations'
+
+// 자주 쓰는 위치 빠른 선택 (고정 프리셋)
+const PRESETS = [{ label: '🏢 중앙일보 빌딩', query: '중앙일보' }]
 
 // 위치 확보 게이트.
-// 1) 진입 시 자동으로 브라우저 위치 요청
+// 1) 진입 시 자동으로 브라우저 위치 요청 → 성공 시 역지오코딩해 라벨 부여
 // 2) 실패하면 주소 직접 입력 폼 노출 → 좌표 변환
-// 좌표가 확정되면 onReady({ coords, label }) 호출
+// 프리셋/최근 위치로도 바로 진입 가능. 좌표 확정 시 onReady({ coords, label }) 호출
 export default function LocationGate({ onReady }) {
   const { status, coords, error, request } = useGeolocation()
   const [address, setAddress] = useState('')
   const [geocoding, setGeocoding] = useState(false)
   const [manualError, setManualError] = useState(null)
+  const [recents] = useState(getRecentLocations)
 
   // 최초 1회 위치 요청
   useEffect(() => {
     request()
   }, [request])
 
-  // 위치 수집 성공 시 상위로 전달
+  // 위치 수집 성공 시 역지오코딩으로 라벨을 붙여 상위로 전달
   useEffect(() => {
-    if (status === 'success' && coords) {
-      onReady({ coords, label: '현재 위치' })
+    if (status !== 'success' || !coords) return
+    let cancelled = false
+    coordsToAddress(coords).then((label) => {
+      if (!cancelled) onReady({ coords, label })
+    })
+    return () => {
+      cancelled = true
     }
   }, [status, coords, onReady])
-
-  // 자주 쓰는 위치 빠른 선택
-  const PRESETS = [{ label: '🏢 중앙일보 빌딩', query: '중앙일보' }]
 
   const goToAddress = async (query) => {
     const q = query.trim()
@@ -47,12 +54,42 @@ export default function LocationGate({ onReady }) {
     goToAddress(address)
   }
 
+  // 프리셋 + 최근 위치 빠른 선택 (로딩/직접입력 화면 공통)
+  const quickPicks = (
+    <>
+      <div className="preset-row">
+        <span className="radius-label">빠른 선택</span>
+        {PRESETS.map((p) => (
+          <button key={p.query} className="chip" onClick={() => goToAddress(p.query)} disabled={geocoding}>
+            {p.label}
+          </button>
+        ))}
+      </div>
+      {recents.length > 0 && (
+        <div className="preset-row">
+          <span className="radius-label">최근 위치</span>
+          {recents.map((r) => (
+            <button
+              key={r.label}
+              className="chip"
+              onClick={() => onReady({ coords: { lat: r.lat, lng: r.lng }, label: r.label })}
+              disabled={geocoding}
+            >
+              📍 {r.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </>
+  )
+
   if (status === 'loading' || status === 'idle') {
     return (
       <div className="gate">
         <div className="spinner" />
         <p>현재 위치를 확인하는 중…</p>
         <p className="hint">브라우저에서 위치 권한을 허용해 주세요.</p>
+        {quickPicks}
       </div>
     )
   }
@@ -76,19 +113,7 @@ export default function LocationGate({ onReady }) {
       </form>
       {manualError && <p className="error">{manualError}</p>}
 
-      <div className="preset-row">
-        <span className="radius-label">빠른 선택</span>
-        {PRESETS.map((p) => (
-          <button
-            key={p.query}
-            className="chip"
-            onClick={() => goToAddress(p.query)}
-            disabled={geocoding}
-          >
-            {p.label}
-          </button>
-        ))}
-      </div>
+      {quickPicks}
 
       <button className="link-btn" onClick={request} disabled={status === 'loading'}>
         위치 권한 다시 시도
