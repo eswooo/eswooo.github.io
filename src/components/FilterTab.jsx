@@ -12,6 +12,9 @@ const CATEGORIES = [
   { key: 'western', label: '양식', keyword: '양식' },
   { key: 'bunsik', label: '분식', keyword: '분식' },
   { key: 'chicken', label: '치킨', keyword: '치킨' },
+  { key: 'burger', label: '햄버거', keyword: '햄버거' },
+  { key: 'fastfood', label: '패스트푸드', keyword: '패스트푸드' },
+  { key: 'pizza', label: '피자', keyword: '피자' },
   { key: 'cafe', label: '카페/디저트', keyword: '카페' },
 ]
 
