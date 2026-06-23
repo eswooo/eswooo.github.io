@@ -283,6 +283,27 @@
   font-size: 0.85rem;
   color: var(--muted);
 }
+.card__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.card__nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 7px 14px;
+  border-radius: 8px;
+}
+.card__nav:hover {
+  background: var(--primary-dark);
+}
 .card__link {
   font-size: 0.85rem;
   color: var(--accent);

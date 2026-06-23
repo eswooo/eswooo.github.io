@@ -21,6 +21,8 @@ export default function RestaurantCard({ place, highlight = false }) {
   if (!place) return null
   const { genre, detail } = categoryInfo(place.category)
   const hasMenuHint = detail && detail !== genre
+  // 카카오맵 길찾기 딥링크 (목적지 = 이 식당). y=위도, x=경도
+  const navUrl = `https://map.kakao.com/link/to/${encodeURIComponent(place.name)},${place.y},${place.x}`
   return (
     <div className={`card ${highlight ? 'card--highlight' : ''}`}>
       <div className="card__head">
@@ -37,9 +39,14 @@ export default function RestaurantCard({ place, highlight = false }) {
         {place.phone && <span className="card__phone">{place.phone}</span>}
       </div>
       <p className="card__addr">{place.roadAddress || place.address}</p>
-      <a className="card__link" href={place.placeUrl} target="_blank" rel="noreferrer">
-        카카오맵에서 보기 / 길찾기 →
-      </a>
+      <div className="card__actions">
+        <a className="card__nav" href={navUrl} target="_blank" rel="noreferrer">
+          🧭 길찾기
+        </a>
+        <a className="card__link" href={place.placeUrl} target="_blank" rel="noreferrer">
+          카카오맵에서 보기 →
+        </a>
+      </div>
     </div>
   )
 }
