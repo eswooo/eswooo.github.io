@@ -1,22 +1,9 @@
 import { useState, useCallback } from 'react'
 import { useLocation } from '../context/LocationContext'
 import { searchByKeyword, searchNearbyRestaurants } from '../lib/kakao'
+import { CATEGORIES } from '../lib/categories'
 import RestaurantCard from './RestaurantCard'
 import MapView from './MapView'
-
-const CATEGORIES = [
-  { key: 'all', label: '전체', keyword: null },
-  { key: 'korean', label: '한식', keyword: '한식' },
-  { key: 'chinese', label: '중식', keyword: '중식' },
-  { key: 'japanese', label: '일식', keyword: '일식' },
-  { key: 'western', label: '양식', keyword: '양식' },
-  { key: 'bunsik', label: '분식', keyword: '분식' },
-  { key: 'chicken', label: '치킨', keyword: '치킨' },
-  { key: 'burger', label: '햄버거', keyword: '햄버거' },
-  { key: 'fastfood', label: '패스트푸드', keyword: '패스트푸드' },
-  { key: 'pizza', label: '피자', keyword: '피자' },
-  { key: 'cafe', label: '카페/디저트', keyword: '카페' },
-]
 
 const RADIUS_OPTIONS = [500, 1000, 1500, 2000]
 const COUNT_OPTIONS = [15, 30, 45]
@@ -32,6 +19,7 @@ export default function FilterTab() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [searched, setSearched] = useState(false)
+  const [showList, setShowList] = useState(false)
 
   const pickRandom = useCallback((list) => {
     if (!list.length) return null
@@ -107,10 +95,28 @@ export default function FilterTab() {
       {picked && (
         <>
           <RestaurantCard place={picked} highlight />
-          <button className="secondary-btn" onClick={() => setPicked(pickRandom(results))}>
-            🎲 다른 곳 추천 ({results.length}곳 중)
-          </button>
-          <MapView center={coords} places={picked ? [picked] : []} selected={picked} />
+          <div className="filter-actions">
+            <button className="secondary-btn" onClick={() => setPicked(pickRandom(results))}>
+              🎲 다른 곳 추천
+            </button>
+            <button className="secondary-btn" onClick={() => setShowList((v) => !v)}>
+              {showList ? '목록 닫기' : `📋 후보 ${results.length}곳 보기`}
+            </button>
+          </div>
+          <MapView center={coords} places={showList ? results : [picked]} selected={picked} />
+
+          {showList && (
+            <div className="list">
+              {results.map((p) => (
+                <RestaurantCard
+                  key={p.id}
+                  place={p}
+                  selected={picked && p.id === picked.id}
+                  onSelect={() => setPicked(p)}
+                />
+              ))}
+            </div>
+          )}
         </>
       )}
     </div>

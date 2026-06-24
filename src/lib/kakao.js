@@ -107,17 +107,19 @@ export function searchNearbyRestaurants({ x, y, radius = 1000, sort = 'accuracy'
 /**
  * 키워드 + 좌표 기반 검색 (예: "한식", "초밥"). maxResults 까지 페이지 누적.
  * @param {string} keyword
- * @param {{ x:number|string, y:number|string, radius?:number, maxResults?:number }} opts
+ * @param {{ x:number|string, y:number|string, radius?:number, sort?:'distance'|'accuracy', maxResults?:number }} opts
  * @returns {Promise<Array>}
  */
-export function searchByKeyword(keyword, { x, y, radius = 1000, maxResults = 15 }) {
+export function searchByKeyword(keyword, { x, y, radius = 1000, sort = 'distance', maxResults = 15 }) {
   return paginatedSearch((kakao, handle) => {
     const places = new kakao.maps.services.Places()
+    const { SortBy } = kakao.maps.services
+    const sortBy = sort === 'accuracy' ? SortBy.ACCURACY : SortBy.DISTANCE
     places.keywordSearch(keyword, handle, {
       x,
       y,
       radius,
-      sort: kakao.maps.services.SortBy.DISTANCE,
+      sort: sortBy,
       size: 15,
       category_group_code: 'FD6',
     })

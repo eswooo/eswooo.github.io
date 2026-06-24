@@ -64,5 +64,12 @@ export default function MapView({ center, places = [], selected }) {
     })
   }, [places, selected, center])
 
+  // 선택이 바뀌면 지도를 화면 안으로 스크롤 (목록에서 카드 클릭 시 지도가 위에 있으므로)
+  useEffect(() => {
+    if (selected && containerRef.current) {
+      containerRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }, [selected])
+
   return <div ref={containerRef} className="map" />
 }

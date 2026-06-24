@@ -19,7 +19,7 @@ function formatDistance(d) {
   return d >= 1000 ? `${(d / 1000).toFixed(1)}km` : `${d}m`
 }
 
-export default function RestaurantCard({ place, highlight = false }) {
+export default function RestaurantCard({ place, highlight = false, selected = false, onSelect }) {
   const [copied, setCopied] = useState(false)
   if (!place) return null
   const { genre, detail } = categoryInfo(place.category)
@@ -67,7 +67,10 @@ export default function RestaurantCard({ place, highlight = false }) {
   }
 
   return (
-    <div className={`card ${highlight ? 'card--highlight' : ''}`}>
+    <div
+      className={`card ${highlight || selected ? 'card--highlight' : ''} ${onSelect ? 'card--clickable' : ''}`}
+      onClick={onSelect}
+    >
       <div className="card__head">
         <h3 className="card__name">{place.name}</h3>
         {place.distance != null && (
@@ -82,7 +85,7 @@ export default function RestaurantCard({ place, highlight = false }) {
         {place.phone && <span className="card__phone">{place.phone}</span>}
       </div>
       <p className="card__addr">{place.roadAddress || place.address}</p>
-      <div className="card__actions">
+      <div className="card__actions" onClick={(e) => e.stopPropagation()}>
         <a className="card__nav" href={navUrl} target="_blank" rel="noreferrer">
           🧭 길찾기
         </a>
