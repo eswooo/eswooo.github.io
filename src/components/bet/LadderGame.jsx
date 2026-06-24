@@ -16,7 +16,7 @@ function shuffle(arr) {
 }
 
 // 인접 칼럼 사이 가로 rung 랜덤 생성 (같은 행에서 칼럼 공유 금지)
-function buildRungs(cols, rows) {
+function genRungs(cols, rows) {
   const set = new Set()
   for (let r = 0; r < rows; r++) {
     let c = 0
@@ -27,6 +27,41 @@ function buildRungs(cols, rows) {
       } else {
         c += 1
       }
+    }
+  }
+  return set
+}
+
+// 모든 세로줄이 최소 한 번은 가로줄에 닿는지 (안 닿으면 '일자로 내려감')
+function allColumnsTouched(set, cols) {
+  const touched = new Set()
+  for (const key of set) {
+    const c = Number(key.split(',')[1])
+    touched.add(c) // 칼럼 c
+    touched.add(c + 1) // 칼럼 c+1
+  }
+  for (let c = 0; c < cols; c++) {
+    if (!touched.has(c)) return false
+  }
+  return true
+}
+
+// 일자 내려가는 줄이 없도록, 모든 칼럼이 닿을 때까지 재생성
+function buildRungs(cols, rows) {
+  for (let attempt = 0; attempt < 100; attempt++) {
+    const set = genRungs(cols, rows)
+    if (allColumnsTouched(set, cols)) return set
+  }
+  // 폴백: 안 닿은 칼럼에 가로줄을 강제로 추가
+  const set = genRungs(cols, rows)
+  for (let c = 0; c < cols; c++) {
+    const touched = [...set].some((k) => {
+      const cc = Number(k.split(',')[1])
+      return cc === c || cc === c - 1
+    })
+    if (!touched) {
+      const side = c < cols - 1 ? c : c - 1
+      set.add(`${Math.floor(Math.random() * rows)},${side}`)
     }
   }
   return set
@@ -45,11 +80,20 @@ export default function LadderGame({ names }) {
   )
 
   const [ladder, setLadder] = useState(make)
+  const [order, setOrder] = useState(names) // 상단 이름 순서
   const [selected, setSelected] = useState(null) // 시작 칼럼
   const [result, setResult] = useState(null)
+  const [showAll, setShowAll] = useState(false)
 
   const reset = () => {
     setLadder(make())
+    setSelected(null)
+    setResult(null)
+    setShowAll(false)
+  }
+
+  const shuffleOrder = () => {
+    setOrder((prev) => shuffle(prev))
     setSelected(null)
     setResult(null)
   }
@@ -79,7 +123,7 @@ export default function LadderGame({ names }) {
   const select = (start) => {
     const { end } = trace(start)
     setSelected(start)
-    setResult({ name: names[start], outcome: ladder.outcomes[end] })
+    setResult({ name: order[start], outcome: ladder.outcomes[end] })
   }
 
   const path = selected != null ? trace(selected).pts : null
@@ -130,7 +174,7 @@ export default function LadderGame({ names }) {
           />
         )}
         {/* 상단 이름 (클릭) */}
-        {names.map((n, j) => (
+        {order.map((n, j) => (
           <text
             key={`tn${j}`}
             x={colX(j)}
@@ -154,9 +198,33 @@ export default function LadderGame({ names }) {
         ))}
       </svg>
 
-      <button className="secondary-btn" onClick={reset}>
-        🔁 사다리 새로 만들기
-      </button>
+      <div className="filter-actions">
+        <button className="secondary-btn" onClick={() => setShowAll((v) => !v)}>
+          {showAll ? '결과 숨기기' : '👁 전체 결과 보기'}
+        </button>
+        <button className="secondary-btn" onClick={shuffleOrder}>
+          🔀 순서 섞기
+        </button>
+        <button className="secondary-btn" onClick={reset}>
+          🔁 새로 만들기
+        </button>
+      </div>
+
+      {showAll && (
+        <div className="ladder-results">
+          {order.map((n, j) => {
+            const outcome = ladder.outcomes[trace(j).end]
+            const hit = outcome === '쏘기'
+            return (
+              <div key={j} className={`ladder-result ${hit ? 'ladder-result--hit' : ''}`}>
+                <span className="ladder-result__name">{n}</span>
+                <span className="ladder-result__arrow">→</span>
+                <span className="ladder-result__outcome">{hit ? '쏘기 ☕' : '통과'}</span>
+              </div>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }

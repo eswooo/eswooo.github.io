@@ -363,6 +363,20 @@
 }
 
 /* 제비뽑기 */
+.order-row {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  font-size: 0.85rem;
+}
+.order-row__label {
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.order-row__names {
+  font-weight: 600;
+  color: var(--text);
+}
 .lots {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
@@ -464,6 +478,39 @@
 }
 .ladder__outcome--hit {
   fill: var(--primary);
+  font-weight: 700;
+}
+.ladder-results {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ladder-result {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  font-size: 0.95rem;
+}
+.ladder-result--hit {
+  border-color: var(--primary);
+  background: rgba(255, 107, 53, 0.1);
+}
+.ladder-result__name {
+  font-weight: 700;
+  min-width: 64px;
+}
+.ladder-result__arrow {
+  color: var(--muted);
+}
+.ladder-result__outcome {
+  color: var(--muted);
+}
+.ladder-result--hit .ladder-result__outcome {
+  color: var(--primary);
   font-weight: 700;
 }
 
