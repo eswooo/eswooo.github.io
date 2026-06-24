@@ -7,6 +7,7 @@ import RouletteTab from './components/RouletteTab'
 import FilterTab from './components/FilterTab'
 import ListTab from './components/ListTab'
 import BetPicker from './components/BetPicker'
+import MiniGames from './components/MiniGames'
 import './App.css'
 
 const TABS = [
@@ -16,7 +17,7 @@ const TABS = [
 ]
 
 export default function App() {
-  const [mode, setMode] = useState('lunch') // 'lunch' | 'bet'
+  const [mode, setMode] = useState('lunch') // 'lunch' | 'bet' | 'mini'
   const [location, setLocation] = useState(null) // { coords, label }
   const [tab, setTab] = useState('roulette')
 
@@ -50,9 +51,17 @@ export default function App() {
         >
           ☕ 누가 쏠까
         </button>
+        <button
+          className={`mode-switch__btn ${mode === 'mini' ? 'mode-switch__btn--active' : ''}`}
+          onClick={() => setMode('mini')}
+        >
+          🎮 미니게임
+        </button>
       </div>
 
-      {mode === 'bet' ? (
+      {mode === 'mini' ? (
+        <MiniGames />
+      ) : mode === 'bet' ? (
         <BetPicker />
       ) : !location ? (
         <LocationGate onReady={handleReady} />
