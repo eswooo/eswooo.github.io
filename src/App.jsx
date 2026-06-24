@@ -6,6 +6,7 @@ import TabNav from './components/TabNav'
 import RouletteTab from './components/RouletteTab'
 import FilterTab from './components/FilterTab'
 import ListTab from './components/ListTab'
+import BetPicker from './components/BetPicker'
 import './App.css'
 
 const TABS = [
@@ -15,6 +16,7 @@ const TABS = [
 ]
 
 export default function App() {
+  const [mode, setMode] = useState('lunch') // 'lunch' | 'bet'
   const [location, setLocation] = useState(null) // { coords, label }
   const [tab, setTab] = useState('roulette')
 
@@ -28,14 +30,31 @@ export default function App() {
     <div className="app">
       <header className="app-header">
         <h1>오늘 점심 뭐 먹지? 🍚</h1>
-        {location && (
+        {mode === 'lunch' && location && (
           <button className="loc-badge" onClick={() => setLocation(null)} title="위치 변경">
             📍 {location.label}
           </button>
         )}
       </header>
 
-      {!location ? (
+      <div className="mode-switch">
+        <button
+          className={`mode-switch__btn ${mode === 'lunch' ? 'mode-switch__btn--active' : ''}`}
+          onClick={() => setMode('lunch')}
+        >
+          🍚 점심 추천
+        </button>
+        <button
+          className={`mode-switch__btn ${mode === 'bet' ? 'mode-switch__btn--active' : ''}`}
+          onClick={() => setMode('bet')}
+        >
+          ☕ 누가 쏠까
+        </button>
+      </div>
+
+      {mode === 'bet' ? (
+        <BetPicker />
+      ) : !location ? (
         <LocationGate onReady={handleReady} />
       ) : (
         <LocationContext.Provider value={location}>

@@ -139,6 +139,372 @@
   font-size: 0.85rem;
 }
 
+/* Mode switch (점심 추천 / 누가 쏠까) */
+.mode-switch {
+  display: flex;
+  gap: 6px;
+  margin: 0 16px 4px;
+  background: #ececf0;
+  border-radius: 10px;
+  padding: 4px;
+}
+.mode-switch__btn {
+  flex: 1;
+  border: none;
+  background: none;
+  padding: 9px 4px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+.mode-switch__btn--active {
+  background: #fff;
+  color: var(--primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Bet picker (누가 쏠까) */
+.bet {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: stretch;
+}
+.bet__title {
+  margin: 4px 0 0;
+  text-align: center;
+}
+.bet__hint {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0;
+}
+.bet__input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+}
+.bet__input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+.bet__count {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+/* 멤버 칩 입력 */
+.member-add {
+  display: flex;
+  gap: 8px;
+}
+.member-add__input {
+  flex: 1;
+  padding: 11px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 1rem;
+}
+.member-add__input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+.member-add__btn {
+  border: none;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 0 16px;
+  cursor: pointer;
+}
+.member-add__btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.members {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.member {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+  background: #fff;
+  opacity: 0.55;
+}
+.member--on {
+  border-color: var(--primary);
+  background: rgba(255, 107, 53, 0.1);
+  opacity: 1;
+}
+.member__toggle {
+  border: none;
+  background: none;
+  padding: 7px 4px 7px 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+}
+.member--on .member__toggle {
+  color: var(--primary);
+}
+.member__del {
+  border: none;
+  background: none;
+  color: var(--muted);
+  padding: 7px 12px 7px 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+.member__del:hover {
+  color: #d93a3a;
+}
+.members-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.members-actions {
+  display: flex;
+  gap: 12px;
+}
+.bet__warn {
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin: 0;
+}
+.bet__result {
+  margin-top: 8px;
+  padding: 28px 16px;
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  border: 2px solid var(--border);
+  text-align: center;
+  font-size: 1.3rem;
+  min-height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.bet__result--done {
+  border-color: var(--primary);
+  box-shadow: 0 4px 16px rgba(255, 107, 53, 0.15);
+}
+.bet__flash {
+  color: var(--muted);
+  font-weight: 600;
+}
+.bet__winner {
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 1.7rem;
+}
+.bet__msg {
+  font-weight: 600;
+}
+
+/* 게임 방식 하위 탭 */
+.game-nav {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+.game-nav__btn {
+  flex: 1;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 10px;
+  padding: 8px 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.74rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+.game-nav__btn--active {
+  border-color: var(--primary);
+  color: var(--primary);
+  font-weight: 700;
+  background: rgba(255, 107, 53, 0.06);
+}
+.game-nav__icon {
+  font-size: 1.1rem;
+}
+
+.game {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: stretch;
+  margin-top: 6px;
+}
+.game__status {
+  text-align: center;
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+/* 제비뽑기 */
+.lots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 8px;
+}
+.lot {
+  aspect-ratio: 3 / 4;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff7f3;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: var(--primary);
+}
+.lot:disabled {
+  cursor: default;
+}
+.lot--open {
+  background: #fff;
+}
+.lot--hit {
+  border: 2px solid var(--primary);
+  background: rgba(255, 107, 53, 0.1);
+}
+.lot__back {
+  font-weight: 800;
+  color: var(--primary);
+}
+.lot__face {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.lot__name {
+  font-size: 0.85rem;
+  color: var(--text);
+  font-weight: 600;
+}
+.lot__outcome {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.lot--hit .lot__outcome {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+/* 사다리타기 */
+.ladder {
+  width: 100%;
+  height: auto;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.ladder__pole {
+  stroke: #d9dce1;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.ladder__rung {
+  stroke: #c2c6cd;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.ladder__path {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: ladder-draw 0.7s ease forwards;
+}
+@keyframes ladder-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.ladder__name {
+  font-size: 13px;
+  font-weight: 700;
+  text-anchor: middle;
+  fill: var(--text);
+  cursor: pointer;
+}
+.ladder__name--sel {
+  fill: var(--primary);
+}
+.ladder__outcome {
+  font-size: 11px;
+  text-anchor: middle;
+  fill: var(--muted);
+}
+.ladder__outcome--hit {
+  fill: var(--primary);
+  font-weight: 700;
+}
+
+/* 룰렛 휠 */
+.wheel-wrap {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.wheel {
+  width: 260px;
+  max-width: 80vw;
+  height: auto;
+}
+.wheel-pointer {
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 11px solid transparent;
+  border-right: 11px solid transparent;
+  border-top: 18px solid var(--text);
+  z-index: 2;
+}
+.wheel__label {
+  font-size: 11px;
+  font-weight: 700;
+  fill: #fff;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+}
+.wheel__hub {
+  fill: #fff;
+  stroke: var(--border);
+  stroke-width: 2;
+}
+
 /* Tab nav */
 .tab-nav {
   display: flex;
@@ -303,6 +669,22 @@
 }
 .card__nav:hover {
   background: var(--primary-dark);
+}
+.card__share {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #fff;
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 13px;
+  border-radius: 8px;
+}
+.card__share:hover {
+  background: rgba(255, 107, 53, 0.08);
 }
 .card__link {
   font-size: 0.85rem;
