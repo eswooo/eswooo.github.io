@@ -261,6 +261,9 @@
 .member--on .member__toggle {
   color: var(--primary);
 }
+.member__toggle--solo {
+  padding-right: 14px;
+}
 .member__del {
   border: none;
   background: none;
@@ -667,7 +670,7 @@
 }
 .whack-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 .whack-hole {
@@ -727,7 +730,7 @@
 /* 숫자 순서 터치 */
 .num-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
 }
 .num-tile {
@@ -749,7 +752,7 @@
 /* 순서 기억 (사이먼) */
 .simon-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
   width: 100%;
   max-width: 360px;
@@ -772,7 +775,7 @@
 }
 .math-options {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 .math-opt {
@@ -842,7 +845,7 @@
 /* 카드 짝맞추기 */
 .memory-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
 }
 .memory-card {
@@ -861,116 +864,49 @@
   border-color: #2d9d78;
 }
 
-/* 야구 장면 */
-.bb-scene {
+/* Phaser 게임 캔버스 (야구/축구) */
+.phaser-wrap {
   position: relative;
-  width: 300px;
-  max-width: 100%;
+  width: 100%;
+  max-width: 320px;
   margin: 0 auto;
-  background: linear-gradient(#bfe3a0 0%, #a7d489 60%, #c9a16b 60%, #b98e58 100%);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
+  background: #6fb353;
   touch-action: none;
   user-select: none;
 }
-.bb-plate {
-  position: absolute;
-  left: 50%;
-  width: 60px;
-  height: 10px;
-  background: #fff;
-  border-radius: 3px;
-  transform: translate(-50%, -50%) rotate(0deg);
-  opacity: 0.85;
+.phaser-box {
+  width: 100%;
+  height: 100%;
 }
-.bb-ball {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  will-change: transform;
+.phaser-box canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
 }
-.bb-bat {
-  position: absolute;
-  right: 18%;
-  bottom: 10%;
-  font-size: 2.6rem;
-  transform-origin: bottom center;
-  transform: rotate(35deg);
-  transition: transform 0.13s ease-out;
-  pointer-events: none;
-}
-.bb-bat--swing {
-  transform: rotate(-75deg);
-}
-.bb-result {
+.phaser-overlay {
   position: absolute;
   inset: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 1.8rem;
-  font-weight: 800;
-  color: var(--primary);
-  text-shadow: 0 1px 4px rgba(255, 255, 255, 0.9);
-  pointer-events: none;
+  gap: 6px;
+  padding: 12px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.34);
+  color: #fff;
+  cursor: pointer;
 }
-.bb-result--out {
-  color: #d93a3a;
+.phaser-overlay span {
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
-
-/* 페널티킥 */
-.pk-field {
-  position: relative;
-  width: 300px;
-  max-width: 100%;
-  margin: 0 auto;
-  background: linear-gradient(#86c66a, #6fb353);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  touch-action: none;
-  user-select: none;
-}
-.pk-goal {
-  position: absolute;
-  top: 4%;
-  left: 10%;
-  right: 10%;
-  height: 38%;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  background: rgba(255, 255, 255, 0.12);
-  border: 4px solid #fff;
-  border-bottom: none;
-  border-radius: 6px 6px 0 0;
-}
-.pk-goal-zone {
-  border-right: 1px dashed rgba(255, 255, 255, 0.45);
-}
-.pk-goal-zone:last-child {
-  border-right: none;
-}
-.keeper {
-  position: absolute;
-  top: 26%;
-  font-size: 2.1rem;
-  transform: translateX(-50%);
-  will-change: left, transform;
-  z-index: 2;
-}
-.pk-ball {
-  position: absolute;
-  font-size: 1.9rem;
-  transform: translate(-50%, -50%);
-  will-change: transform;
-  z-index: 3;
+.phaser-overlay__big {
+  font-size: 2.4rem !important;
 }
 
 /* 룰렛 휠 */

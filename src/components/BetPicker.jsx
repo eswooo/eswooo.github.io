@@ -5,12 +5,14 @@ import RandomPick from './bet/RandomPick'
 import DrawLots from './bet/DrawLots'
 import LadderGame from './bet/LadderGame'
 import WheelGame from './bet/WheelGame'
+import CafePick from './bet/CafePick'
 
 const GAMES = [
   { key: 'random', label: '랜덤뽑기', icon: '🎯' },
   { key: 'lots', label: '제비뽑기', icon: '🎟️' },
   { key: 'ladder', label: '사다리', icon: '🪜' },
   { key: 'wheel', label: '룰렛', icon: '🎡' },
+  { key: 'cafe', label: '카페', icon: '☕' },
 ]
 
 // "누가 쏠까" 컨테이너: 공유 멤버(useMembers) + 게임 방식 선택
@@ -24,7 +26,7 @@ export default function BetPicker() {
       <div className="bet">
         <h2 className="bet__title">누가 쏠까? ☕</h2>
 
-        <MemberInput members={members} />
+        {game !== 'cafe' && <MemberInput members={members} />}
 
         <div className="game-nav">
           {GAMES.map((g) => (
@@ -39,7 +41,9 @@ export default function BetPicker() {
           ))}
         </div>
 
-        {names.length < 2 ? (
+        {game === 'cafe' ? (
+          <CafePick />
+        ) : names.length < 2 ? (
           <p className="bet__warn">참여자를 2명 이상 선택해 주세요.</p>
         ) : (
           <>

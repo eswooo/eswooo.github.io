@@ -66,7 +66,7 @@ export default function OddColor({ onResult }) {
       </p>
 
       {phase !== 'idle' && (
-        <div className="odd-grid" style={{ gridTemplateColumns: `repeat(${board.cols}, 1fr)` }}>
+        <div className="odd-grid" style={{ gridTemplateColumns: `repeat(${board.cols}, minmax(0, 1fr))` }}>
           {Array.from({ length: board.count }).map((_, i) => {
             const isAnswer = i === board.oddIndex
             const isWrong = phase === 'over' && i === wrongPick
